@@ -6,6 +6,11 @@ metadata:
   namespace: default
 spec:
   secretName: kube-crowlight-com-staging-tls
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: ""
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer

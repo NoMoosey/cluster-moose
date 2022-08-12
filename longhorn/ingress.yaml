@@ -1,21 +1,22 @@
+---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: traefik-dashboard
-  namespace: traefik
+  name: longhorn-ui
+  namespace: longhorn-system
   annotations: 
     kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`traefik.kube.crowlight.com`)
+    - match: Host(`longhorn.kube.crowlight.com`)
       kind: Rule
-      middlewares:
-        - name: traefik-dashboard-basicauth
-          namespace: traefik
       services:
-        - name: api@internal
-          kind: TraefikService
+        - name: longhorn-frontend
+          port: 80
+      middlewares:
+        - name: default-headers
+          namespace: traefik
   tls:
     secretName: kube-crowlight-com-staging-tls
