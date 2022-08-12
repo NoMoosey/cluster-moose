@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kube-crowlight-com
+  namespace: default
+spec:
+  secretName: kube-crowlight-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.kube.crowlight.com"
+  dnsNames:
+  - "kube.crowlight.com"
+  - "*.kube.crowlight.com"

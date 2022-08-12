@@ -34,33 +34,13 @@ spec:
         - name: folding-config
           mountPath: /config/config.xml
           subPath: config.xml
+        - name: folding-work
+          mountPath: /config/work
       restartPolicy: Always
       volumes:
       - name: folding-config
         configMap:
           name: folding-config
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: folding-env
-  namespace: random
-data:
-  PUID: "1000"
-  PGID: "1000"
-  TZ: America/Toronto
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: folding-svc
-  namespace: random
-  labels:
-    name: folding-svc
-spec:
-  type: ClusterIP
-  selector:
-    app: folding
-  ports:
-    - port: 7396
-      targetPort: 7396
+      - name: folding-work
+        persistentVolumeClaim:
+          claimName: folding-work-pvc

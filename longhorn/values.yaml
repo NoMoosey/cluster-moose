@@ -29,7 +29,9 @@ persistence:
   #   dataSourceParameters: ~
   #   expectedChecksum: ~
 
-
+# This is needed to prevent crashing the csi-driver
+csi:
+  kubeletRootDir: /var/lib/kubelet
 
 defaultSettings:
 #   backupTarget: ~
