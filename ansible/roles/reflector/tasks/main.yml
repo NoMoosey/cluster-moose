@@ -1,0 +1,15 @@
+---
+
+- name: Add the Reflector helm repo
+  kubernetes.core.helm_repository:
+    name: emberstack
+    repo_url: https://emberstack.github.io/helm-charts
+
+- name: Install Reflector helm chart
+  kubernetes.core.helm:
+    name: reflector
+    chart_ref: emberstack/reflector
+    release_namespace: reflector
+    create_namespace: yes
+    wait: yes
+    atomic: yes

@@ -1,0 +1,23 @@
+---
+
+- name: Add the MetalLB helm repo
+  kubernetes.core.helm_repository:
+    name: metallb
+    repo_url: https://metallb.github.io/metallb
+
+- name: Install MetalLB helm chart
+  kubernetes.core.helm:
+    name: metallb
+    chart_ref: metallb/metallb
+    release_namespace: metallb
+    create_namespace: yes
+    values_files:
+      - "{{ playbook_dir }}/../kubernetes/metallb/values.yaml"
+    wait: yes
+    atomic: yes
+
+- name: Apply MetalLB config and address pool
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../kubernetes/metallb/address_pool.yaml"
+    wait: yes

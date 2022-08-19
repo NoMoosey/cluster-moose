@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+  name: traefik-servicemonitor
+  namespace: traefik
+spec:
+  endpoints:
+  - interval: 30s
+    port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-monitor
+  namespace: traefik
+  labels:
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: traefik
+  ports:
+    - protocol: TCP
+      name: metrics
+      port: 9100
+      # targetPort: 5000

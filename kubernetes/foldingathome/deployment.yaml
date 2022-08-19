@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: folding
+  namespace: random
+  labels:
+    app: folding
+spec:
+  selector:
+    matchLabels:
+      app: folding
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: folding
+    spec:
+      containers:
+      - name: folding 
+        image: linuxserver/foldingathome
+        envFrom:
+          - configMapRef:
+              name: folding-env
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 3.0
+          requests:
+            memory: 128Mi
+            cpu: 3.0
+        ports:
+        - containerPort: 7396
+        volumeMounts:
+        - name: folding-config
+          mountPath: /config/config.xml
+          subPath: config.xml
+        - name: folding-work
+          mountPath: /config/work
+      restartPolicy: Always
+      volumes:
+      - name: folding-config
+        configMap:
+          name: folding-config
+      - name: folding-work
+        persistentVolumeClaim:
+          claimName: folding-work-pvc

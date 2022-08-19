@@ -1,0 +1,13 @@
+---
+
+- hosts: localhost
+  gather_facts: yes
+  become: no
+  #ignore_errors: yes
+  roles:
+    - role: storage
+    - role: monitoring
+    - role: metallb
+    - role: reflector
+    - role: traefik
+    - role: cert-manager

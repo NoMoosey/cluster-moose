@@ -1,0 +1,32 @@
+---
+
+- name: Add the Traefik helm repo
+  kubernetes.core.helm_repository:
+    name: traefik
+    repo_url: https://helm.traefik.io/traefik
+
+- name: Install Traefik helm chart
+  kubernetes.core.helm:
+    name: traefik
+    chart_ref: traefik/traefik
+    release_namespace: traefik
+    create_namespace: yes
+    values_files:
+      - "{{ playbook_dir }}/../kubernetes/traefik/values.yaml"
+    wait: yes
+    atomic: yes
+
+- name: Apply middleware
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../kubernetes/traefik/default-headers.yaml"
+
+- name: Apply dashboard secret
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../../configs/kubernetes/traefik/secret-dashboard.yaml"
+
+- name: Apply dashboard middleware for basicAuth
+  kubernetes.core.k8s:
+    state: present
+    src: "{{ playbook_dir }}/../kubernetes/traefik/middleware-dashboard.yaml"
