@@ -5,9 +5,9 @@
   become: no
   #ignore_errors: yes
   roles:
-    - role: storage
-    - role: monitoring
+    - {role: storage, tags: ['storage', 'linode']}
+    - {role: monitoring, tags: 'linode'}
     - role: metallb
-    - role: reflector
-    - role: traefik
-    - role: cert-manager
+    - {role: reflector, tags: 'linode'}
+    - {role: traefik, tags: 'linode'}
+    - {role: cert-manager, tags: 'linode'}
