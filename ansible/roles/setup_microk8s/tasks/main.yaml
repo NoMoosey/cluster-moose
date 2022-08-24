@@ -1,4 +1,10 @@
 ---
+- name: Install nfs-common
+  become: true
+  apt:
+    name: nfs-common
+    state: present
+    update_cache: yes
 
 - name: Install MicroK8s snap
   become: yes
@@ -42,7 +48,7 @@
     state: present
 
 - name: Install helm snap
-  become: yes
+  become: true
   community.general.snap:
     name: helm
     classic: yes

@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: folding
   namespace: random
   labels:
     app: folding
 spec:
+  serviceName: folding
   selector:
     matchLabels:
       app: folding
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
       - name: folding 
-        image: linuxserver/foldingathome
+        image: linuxserver/foldingathome:7.6.21-ls73
         envFrom:
           - configMapRef:
               name: folding-env

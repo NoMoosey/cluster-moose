@@ -24,6 +24,12 @@ spec:
         - name: config
           mountPath: /config
           readOnly: false
+        - name: media
+          mountPath: /tv
+          readOnly: false
+        - name: downloads
+          mountPath: /downloads
+          readOnly: false
         livenessProbe:
           tcpSocket:
             port: 8989
@@ -41,6 +47,15 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "2000m"
+      volumes:
+      - name: downloads
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/dev/downloads
+      - name: media
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/dev/media/tv
   volumeClaimTemplates:
   - metadata:
       name: config
