@@ -4,7 +4,7 @@ globalArguments:
 
 additionalArguments:
   - "--serversTransport.insecureSkipVerify=true"
-  - "--log.level=INFO"
+  - "--log.level=DEBUG"
   - "--providers.kubernetescrd.allowCrossNamespace=true"
 
 deployment:
@@ -43,7 +43,7 @@ service:
   type: LoadBalancer
   annotations: {}
   labels: {}
-  # spec:
-  #   loadBalancerIP: 10.1.2.150
+  spec:
+    loadBalancerIP: 10.1.2.150
   loadBalancerSourceRanges: []
   externalIPs: []

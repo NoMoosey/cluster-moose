@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonarr
+  namespace: rr-fam
+spec:
+  serviceName: sonarr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: ghcr.io/linuxserver/sonarr:3.0.9.1549-ls154
+        ports:
+        - containerPort: 8989
+          name: web
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: false
+        livenessProbe:
+          tcpSocket:
+            port: 8989
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8989
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "2000m"
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr-svc
+  namespace: rr-fam
+  labels:
+    name: sonarr-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: sonarr
+  ports:
+    - port: 8989
+      targetPort: 8989
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sonarr-ingress
+  namespace: rr-fam
+  annotations: 
+    kubernetes.io/ingress.class: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`sonarr.kube.crowlight.com`)
+      kind: Rule
+      services:
+        - name: sonarr-svc
+          port: 8989
+      middlewares:
+        - name: default-headers
+          namespace: traefik
+  tls:
+    secretName: kube-crowlight-com-staging-tls

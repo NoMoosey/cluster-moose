@@ -1,23 +1,21 @@
 terraform {
   required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "2.12.1"
-    }
-    helm = {
-      source = "hashicorp/helm"
-      version = "2.6.0"
+    proxmox = {
+      source  = "telmate/proxmox"
+      version = "2.8.0"
     }
   }
 }
 
-
-provider "kubernetes" {
-  config_path = var.kube_config_path
+locals {
+  credentials = yamldecode(file("${path.module}/../../configs/proxmox/terraform_credentials.yaml"))
 }
 
-provider "helm" {
-  kubernetes {
-    config_path = var.kube_config_path
-  }
+provider "proxmox" {
+  pm_api_url = "https://10.1.2.221:8006/api2/json"
+  pm_api_token_id = local.credentials["id"]
+  pm_api_token_secret = local.credentials["secret"]
+  pm_timeout = 20000
+  pm_tls_insecure = true
 }
+

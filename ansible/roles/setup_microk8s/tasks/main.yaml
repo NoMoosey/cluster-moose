@@ -1,0 +1,55 @@
+---
+
+- name: Install MicroK8s snap
+  become: yes
+  community.general.snap:
+    name: microk8s
+    classic: yes
+    channel: "1.24"
+    state: present
+
+- name: Add user to group
+  become: yes
+  user:
+    name: moose
+    append: yes
+    groups: 'microk8s'
+
+- name: Configure .kube permissions
+  file:
+    path: ~/.kube
+    owner: '{{ ansible_user }}'
+    recurse: yes
+
+- name: Configure user group
+  become: yes
+  shell: 'su - {{ ansible_user }}'
+
+- name: Check MicroK8s status and wait for it to be ready
+  shell: 'microk8s status --wait-ready'
+
+- name: Activate addons
+  shell: 'microk8s enable dns'
+
+- name: Output kube config file
+  shell: 'microk8s config > ~/.kube/config'
+
+- name: Install kubectl snap
+  become: yes
+  community.general.snap:
+    name: kubectl
+    classic: yes
+    state: present
+
+- name: Install helm snap
+  become: yes
+  community.general.snap:
+    name: helm
+    classic: yes
+    state: present
+
+- name: Fetch config file
+  fetch:
+    src: ~/.kube/config
+    dest: ~/.kube/config_microk8s_{{ group_names[0] }}
+    flat: yes

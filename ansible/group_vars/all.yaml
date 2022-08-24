@@ -1,2 +1,2 @@
 ---
-kube_config_path: "{{ ansible_env.HOME }}/.kube/kind"
+kube_config_path: "{{ ansible_env.HOME }}/.kube/config"

@@ -1,13 +1,27 @@
 ---
 
-- hosts: localhost
+- hosts: all
   gather_facts: yes
   become: no
   #ignore_errors: yes
   roles:
-    - {role: storage, tags: ['storage', 'linode']}
-    - {role: monitoring, tags: 'linode'}
+    - role: setup_microk8s
+      tags:
+        - microk8s
+    - role: storage
+      tags: 
+        - 'storage'
+        - 'linode'
+    - role: monitoring
+      tags: 
+        - 'linode'
     - role: metallb
-    - {role: reflector, tags: 'linode'}
-    - {role: traefik, tags: 'linode'}
-    - {role: cert-manager, tags: 'linode'}
+    - role: reflector
+      tags: 
+        - 'linode'
+    - role: traefik
+      tags: 
+        - 'linode'
+    - role: cert-manager
+      tags: 
+        - 'linode'
