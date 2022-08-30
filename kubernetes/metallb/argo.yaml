@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+spec:
+  project: metallb
+  source:
+    repoURL: https://github.com/NoMoosey/cluster-moose
+    targetRevision: HEAD
+    path: kubernetes/metallb
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
