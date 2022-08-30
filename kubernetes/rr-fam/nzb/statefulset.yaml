@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nzb
-        image: ghcr.io/linuxserver/nzb:v21.1-ls122
+        image: ghcr.io/linuxserver/nzb:latest
         env:
         - name: PUID
           value: "0"
