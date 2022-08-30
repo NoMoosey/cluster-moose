@@ -17,7 +17,7 @@ persistence:
   defaultFsType: ext4
   defaultClassReplicaCount: 1
   defaultDataLocality: disabled # best-effort otherwise
-  reclaimPolicy: Delete
+  reclaimPolicy: Retain
   # migratable: false
   # recurringJobSelector:
   #   enable: false

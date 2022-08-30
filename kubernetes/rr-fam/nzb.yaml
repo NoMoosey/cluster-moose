@@ -1,45 +1,44 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: sonarr
+  name: nzb
   namespace: rr-fam
 spec:
-  serviceName: sonarr
+  serviceName: nzb
   replicas: 1
   selector:
     matchLabels:
-      app: sonarr
+      app: nzb
   template:
     metadata:
       labels:
-        app: sonarr
+        app: nzb
     spec:
       containers:
-      - name: sonarr
-        image: ghcr.io/linuxserver/sonarr:3.0.9.1549-ls154
+      - name: nzb
+        image: ghcr.io/linuxserver/sabnzbd:3.6.1-ls75 
         ports:
-        - containerPort: 8989
-          name: web
+        - containerPort: 8080
+          name: http
+        # - containerPort: 9090
+        #   name: https
         volumeMounts:
         - name: config
-          mountPath: /config
-          readOnly: false
-        - name: media
-          mountPath: /tv
+          mountPath: /config/
           readOnly: false
         - name: downloads
           mountPath: /downloads
           readOnly: false
-        livenessProbe:
-          tcpSocket:
-            port: 8989
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          tcpSocket:
-            port: 8989
-          initialDelaySeconds: 15
-          periodSeconds: 10
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 9080
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: 9080
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 10
         resources:
           requests:
             memory: "64Mi"
@@ -52,10 +51,6 @@ spec:
         nfs:
           server: 10.1.0.200
           path: /volume1/dev/downloads
-      - name: media
-        nfs:
-          server: 10.1.0.200
-          path: /volume1/dev/media/tv
   volumeClaimTemplates:
   - metadata:
       name: config
@@ -64,27 +59,31 @@ spec:
       storageClassName: longhorn
       resources:
         requests:
-          storage: 5Gi
+          storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sonarr-svc
+  name: nzb-svc
   namespace: rr-fam
   labels:
-    name: sonarr-svc
+    name: nzb-svc
 spec:
   type: ClusterIP
   selector:
-    app: sonarr
+    app: nzb
   ports:
-    - port: 8989
-      targetPort: 8989
+    - port: 8080
+      targetPort: 8080
+      name: http
+    # - port: 9090
+    #   targetPort: 9090
+    #   name: https
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: sonarr-ingress
+  name: nzb-ingress
   namespace: rr-fam
   annotations: 
     kubernetes.io/ingress.class: traefik
@@ -92,11 +91,11 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`sonarr.kube.crowlight.com`)
+    - match: Host(`nzb.kube.crowlight.com`)
       kind: Rule
       services:
-        - name: sonarr-svc
-          port: 8989
+        - name: nzb-svc
+          port: 8080
       middlewares:
         - name: default-headers
           namespace: traefik

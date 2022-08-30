@@ -25,10 +25,10 @@ spec:
         resources:
           limits:
             memory: 1Gi
-            cpu: 3.0
-          requests:
-            memory: 128Mi
-            cpu: 3.0
+            cpu: 1000m
+          # requests:
+          #   memory: 128Mi
+          #   cpu: 3.0
         ports:
         - containerPort: 7396
         volumeMounts:

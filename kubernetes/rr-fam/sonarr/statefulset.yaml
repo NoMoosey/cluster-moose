@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonarr
+  namespace: rr-fam
+spec:
+  serviceName: sonarr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+      - name: sonarr
+        image: ghcr.io/linuxserver/sonarr:3.0.9.1549-ls154
+        env:
+        - name: PUID
+          value: "0"
+        - name: PGID
+          value: "0"
+        ports:
+        - containerPort: 8989
+          name: web
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: false
+        - name: media
+          mountPath: /tv
+          readOnly: false
+        - name: downloads
+          mountPath: /downloads
+          readOnly: false
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 8989
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: 8989
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 10
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "2000m"
+      initContainers:
+      - name: sonarr-init
+        image: nomoosey/sonarr-init:latest
+        volumeMounts:
+        - name: config
+          mountPath: /config_mount
+        command: ['bash', '-c', "sleep 10; cp -rn /init_config/sonarr/* /config_mount/;"]
+      volumes:
+      - name: downloads
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/dev/downloads
+      - name: media
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/dev/media/tv
+      - name: config
+        persistentVolumeClaim:
+          claimName: sonarr-pvc
