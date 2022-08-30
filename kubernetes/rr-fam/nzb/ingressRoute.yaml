@@ -1,0 +1,22 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nzb-ingress
+  namespace: rr-fam
+  annotations: 
+    kubernetes.io/ingress.class: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`nzb.kube.crowlight.com`)
+      kind: Rule
+      services:
+        - name: nzb-svc
+          port: 8080
+      middlewares:
+        - name: default-headers
+          namespace: traefik
+  tls:
+    secretName: kube-crowlight-com-staging-tls

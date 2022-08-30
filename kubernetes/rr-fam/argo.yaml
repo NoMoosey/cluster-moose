@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: rr-fam
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/NoMoosey/cluster-moose
+    targetRevision: HEAD
+    path: kubernetes/rr-fam
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: rr-fam
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nzb
+  namespace: rr-fam
+spec:
+  serviceName: nzb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nzb
+  template:
+    metadata:
+      labels:
+        app: nzb
+    spec:
+      containers:
+      - name: nzb
+        image: ghcr.io/linuxserver/nzb:v21.1-ls122
+        env:
+        - name: PUID
+          value: "0"
+        - name: PGID
+          value: "0"
+        ports:
+        - containerPort: 8080
+          name: web
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          readOnly: false
+        - name: downloads
+          mountPath: /downloads
+          readOnly: false
+        # livenessProbe:
+        #   tcpSocket:
+        #     port: 8080
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   tcpSocket:
+        #     port: 8080
+        #   initialDelaySeconds: 15
+        #   periodSeconds: 10
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "2000m"
+      initContainers:
+      - name: nzb-init
+        image: nomoosey/nzb-init:latest
+        volumeMounts:
+        - name: config
+          mountPath: /config_mount
+        command: ['bash', '-c', "sleep 10; cp -rn /init_config/nzb/* /config_mount/;"]
+      volumes:
+      - name: downloads
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/dev/downloads
+      - name: config
+        persistentVolumeClaim:
+          claimName: nzb-pvc
