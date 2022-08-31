@@ -4,7 +4,7 @@ metadata:
   name: metallb
   namespace: argocd
 spec:
-  project: metallb
+  project: default
   source:
     repoURL: https://github.com/NoMoosey/cluster-moose
     targetRevision: HEAD
