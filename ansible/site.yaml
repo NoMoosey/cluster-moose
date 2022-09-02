@@ -1,27 +1,24 @@
 ---
 
 - hosts: all
-  gather_facts: yes
-  become: no
+  gather_facts: true
+  become: false
   #ignore_errors: yes
   roles:
-    - role: setup_microk8s
-      tags:
-        - microk8s
-    - role: storage
-      tags: 
-        - 'storage'
-        - 'linode'
-    - role: monitoring
-      tags: 
-        - 'linode'
-    - role: metallb
-    - role: reflector
-      tags: 
-        - 'linode'
-    - role: traefik
-      tags: 
-        - 'linode'
-    - role: cert-manager
-      tags: 
-        - 'linode'
+  - role: storage
+    tags: 
+    - 'storage'
+    - 'linode'
+  - role: monitoring
+    tags: 
+    - 'linode'
+  - role: metallb
+  - role: reflector
+    tags: 
+    - 'linode'
+  - role: traefik
+    tags: 
+    - 'linode'
+  - role: cert-manager
+    tags: 
+    - 'linode'
