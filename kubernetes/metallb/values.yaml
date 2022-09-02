@@ -27,7 +27,7 @@ prometheus:
   # (https://github.com/coreos/prometheus-operator) for more powerful
   # monitoring configuration. If you use the Prometheus operator, this
   # can be left at false.
-  scrapeAnnotations: false
+  scrapeAnnotations: true
 
   # port both controller and speaker will listen on for metrics
   metricsPort: 7472
