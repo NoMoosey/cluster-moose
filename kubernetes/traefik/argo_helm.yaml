@@ -3,8 +3,10 @@ kind: Application
 metadata:
   name: traefik-helm
   namespace: argocd
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "-1"
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook: PreSync
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
