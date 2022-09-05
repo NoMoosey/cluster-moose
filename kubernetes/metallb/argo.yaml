@@ -14,7 +14,7 @@
 #   destination:
 #     server: https://kubernetes.default.svc
 #     namespace: metallb
-#   syncPolicy:
-#     automated:
-#       prune: false
-#       selfHeal: false
+  # syncPolicy:
+  #   automated:
+  #     prune: false
+  #     selfHeal: false
