@@ -18,4 +18,4 @@ spec:
         - name: api@internal
           kind: TraefikService
   tls:
-    secretName: kube-crowlight-com-staging-tls
+    secretName: kube-crowlight-com-tls

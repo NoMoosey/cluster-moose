@@ -10,7 +10,7 @@ spec:
     port: metrics
   selector:
     matchLabels:
-      app.kubernetes.io/name: traefik
+      app.kubernetes.io/name: "traefik"
 ---
 apiVersion: v1
 kind: Service

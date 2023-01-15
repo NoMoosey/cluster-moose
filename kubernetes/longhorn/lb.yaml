@@ -10,4 +10,4 @@ spec:
     - port: 80
       targetPort: 8000
   type: LoadBalancer
-  loadBalancerIP: 10.1.2.145
+  loadBalancerIP: 10.1.2.181

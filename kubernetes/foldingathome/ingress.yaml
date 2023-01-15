@@ -3,7 +3,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: folding
-  namespace: random
+  namespace: folding
   annotations: 
     kubernetes.io/ingress.class: traefik
 spec:

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: folding
-  namespace: random
+  namespace: folding
   labels:
     app: folding
 spec:
@@ -25,10 +25,10 @@ spec:
         resources:
           limits:
             memory: 1Gi
-            cpu: 1000m
-          # requests:
-          #   memory: 128Mi
-          #   cpu: 3.0
+            cpu: 10000m
+          requests:
+            memory: 128Mi
+            cpu: 10000m
         ports:
         - containerPort: 7396
         volumeMounts:

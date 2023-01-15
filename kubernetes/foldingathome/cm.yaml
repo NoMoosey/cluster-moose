@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: folding-env
-  namespace: random
+  namespace: folding
 data:
   PUID: "1000"
   PGID: "1000"

@@ -9,7 +9,7 @@ additionalArguments:
 
 deployment:
   enabled: true
-  replicas: 1
+  replicas: 3
   annotations: {}
   podAnnotations: {}
   additionalContainers: []
@@ -35,6 +35,34 @@ providers:
     publishedService:
       enabled: false
 
+persistence:
+  enabled: false
+  name: data
+  accessMode: ReadWriteOnce
+  size: 128Mi
+  storageClass: longhorn
+  path: /data
+  annotations: {}
+
+logs:
+  ## Traefik logs concern everything that happens to Traefik itself (startup, configuration, events, shutdown, and so on).
+  general:
+    # By default, the logs use a text format (common), but you can
+    # also ask for the json format in the format option
+    # format: json
+    # By default, the level is set to ERROR.
+    # Alternative logging levels are DEBUG, PANIC, FATAL, ERROR, WARN, and INFO.
+    level: DEBUG
+  access:
+    # To enable access logs
+    enabled: true
+
+# envFrom:
+#   - configMapRef:
+#       name: traefik-config
+#   - secretRef:
+#       name: traefik-cloudflare-auth
+
 rbac:
   enabled: true
 
@@ -44,6 +72,6 @@ service:
   annotations: {}
   labels: {}
   spec:
-    loadBalancerIP: 10.1.2.150
+    loadBalancerIP: 10.1.2.190
   loadBalancerSourceRanges: []
   externalIPs: []
