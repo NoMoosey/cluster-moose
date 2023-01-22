@@ -1,4 +1,8 @@
 ---
+- name: Copy values file
+  copy:
+    src: "{{ playbook_dir }}/../kubernetes/traefik"
+    dest: "/home/{{ ansible_user }}/k8s/"
 
 - name: Add the Traefik helm repo
   kubernetes.core.helm_repository:
@@ -12,21 +16,26 @@
     release_namespace: traefik
     create_namespace: yes
     values_files:
-      - "{{ playbook_dir }}/../kubernetes/traefik/values.yaml"
+      - "/home/{{ ansible_user }}/k8s/traefik/values.yaml"
     wait: yes
     atomic: yes
 
 - name: Apply middleware
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../kubernetes/traefik/default-headers.yaml"
+    src: "/home/{{ ansible_user }}/k8s/traefik/default-headers.yaml"
 
 - name: Apply dashboard secret
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../../configs/kubernetes/traefik/secret-dashboard.yaml"
+    src: "/home/{{ ansible_user }}/configs/kubernetes/traefik/secret-dashboard.yaml"
 
 - name: Apply dashboard middleware for basicAuth
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../kubernetes/traefik/middleware-dashboard.yaml"
+    src: "/home/{{ ansible_user }}/k8s/traefik/middleware-dashboard.yaml"
+
+- name: Apply traefik dashboard ingress
+  k8s:
+    apply: true
+    src: "/home/{{ ansible_user }}/k8s/traefik/ingress-dashboard.yaml"

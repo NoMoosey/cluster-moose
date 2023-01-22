@@ -1,4 +1,8 @@
 ---
+- name: Copy values file
+  copy:
+    src: "{{ playbook_dir }}/../kubernetes/monitoring"
+    dest: "/home/{{ ansible_user }}/k8s/"
 
 - name: Add the kube-prometheus-stack helm repo
   kubernetes.core.helm_repository:
@@ -12,6 +16,21 @@
     release_namespace: monitoring
     create_namespace: yes
     values_files:
-      - "{{ playbook_dir }}/../kubernetes/monitoring/values.yaml"
-    wait: yes
+      - "/home/{{ ansible_user }}/k8s/monitoring/values.yaml"
+    wait: no
     atomic: yes
+
+- name: Apply Grafana ingress
+  k8s:
+    apply: true
+    src: "/home/{{ ansible_user }}/k8s/monitoring/ingress-grafana.yaml"
+
+- name: Apply Alert Manager ingress
+  k8s:
+    apply: true
+    src: "/home/{{ ansible_user }}/k8s/monitoring/ingress-alertmanager.yaml"
+
+- name: Apply Prometheus ingress
+  k8s:
+    apply: true
+    src: "/home/{{ ansible_user }}/k8s/monitoring/ingress-prometheus.yaml"

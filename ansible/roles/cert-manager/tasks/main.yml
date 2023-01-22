@@ -1,4 +1,8 @@
 ---
+- name: Copy values file
+  copy:
+    src: "{{ playbook_dir }}/../kubernetes/cert-manager"
+    dest: "/home/{{ ansible_user }}/k8s/"
 
 - name: Add the cert-manager helm repo
   kubernetes.core.helm_repository:
@@ -8,19 +12,19 @@
 - name: Get CRD manifest
   get_url:
     url: "https://github.com/cert-manager/cert-manager/releases/download/{{certmgr_chart_version }}/cert-manager.crds.yaml"
-    dest: "{{ playbook_dir }}/cert-mgr-crd.yaml"
+    dest: "/home/{{ ansible_user }}/k8s/cert-manager/cert-mgr-crd.yaml"
   register: cert_mgr_crd_manifest
 
 - name: Add cert-manager CRDs
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/cert-mgr-crd.yaml"
+    src: "/home/{{ ansible_user }}/k8s/cert-manager/cert-mgr-crd.yaml"
     wait: yes
-  when: cert_mgr_crd_manifest.changed
+  # when: cert_mgr_crd_manifest.changed
 
 - name: Delete CRD manifest
   file:
-    path: "{{ playbook_dir }}/cert-mgr-crd.yaml"
+    path: "/home/{{ ansible_user }}/k8s/cert-manager/cert-mgr-crd.yaml"
     state: absent
 
 - name: Install cert-manager helm chart
@@ -31,36 +35,36 @@
     release_namespace: cert-manager
     create_namespace: yes
     values_files:
-      - "{{ playbook_dir }}/../kubernetes/cert-manager/values.yaml"
+      - "/home/{{ ansible_user }}/k8s/cert-manager/values.yaml"
     wait: yes
     atomic: yes
 
 - name: Apply Cloudflare token secret
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../../configs/kubernetes/cert-manager/secret-token.yaml"
+    src: "/home/{{ ansible_user }}/configs/kubernetes/cert-manager/secret-token.yaml"
 
 - name: Apply staging issuer
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../kubernetes/cert-manager/issuers/letsencrypt-staging.yaml"
+    src: "/home/{{ ansible_user }}/k8s/cert-manager/issuers/letsencrypt-staging.yaml"
     wait: yes
 
 - name: Apply staging certificate
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../kubernetes/cert-manager/certificates/staging/kube-crowlight-com.yaml"
+    src: "/home/{{ ansible_user }}/k8s/cert-manager/certificates/staging/kube-crowlight-com.yaml"
     wait: yes
 
 - name: Apply production issuer
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../kubernetes/cert-manager/issuers/letsencrypt-production.yaml"
+    src: "/home/{{ ansible_user }}/k8s/cert-manager/issuers/letsencrypt-production.yaml"
     wait: yes
 
 - name: Apply production certificate
   kubernetes.core.k8s:
     state: present
-    src: "{{ playbook_dir }}/../kubernetes/cert-manager/certificates/production/kube-crowlight-com.yaml"
+    src: "/home/{{ ansible_user }}/k8s/cert-manager/certificates/production/kube-crowlight-com.yaml"
     wait: yes
 

@@ -1,0 +1,27 @@
+---
+- name: Install helm
+  become: true
+  shell: |
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+
+- name: Check if config repo is present
+  stat:
+    path: /home/{{ ansible_user }}/configs
+  register: config_dir
+
+- name: Copy configuration repo
+  copy:
+    src: "{{ playbook_dir }}/../../configs"
+    dest: "/home/{{ ansible_user }}/"
+  when: not config_dir.stat.isdir
+
+- name: Install pip
+  become: true
+  apt:
+    name: python3-pip
+
+- name: Install python K8s Module
+  pip:
+    name: kubernetes

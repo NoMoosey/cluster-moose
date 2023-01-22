@@ -1,19 +1,19 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: grafana-ingress
-  namespace: monitoring
+  name: heimdall-ingress
+  namespace: heimdall
   annotations: 
     kubernetes.io/ingress.class: traefik
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`grafana.kube.crowlight.com`)
+    - match: Host(`home.kube.crowlight.com`)
       kind: Rule
       services:
-        - name: grafana-svc
-          port: 3000
+        - name: heimdall-svc
+          port: 80
       middlewares:
         - name: default-headers
           namespace: traefik

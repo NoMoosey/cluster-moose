@@ -2,23 +2,23 @@
 
 - hosts: all
   gather_facts: true
-  become: false
   #ignore_errors: yes
+  become: false
   roles:
-  - role: storage
-    tags: 
-    - 'storage'
-    - 'linode'
-  - role: monitoring
+  - role: setup
+  - role: cert-manager
     tags: 
     - 'linode'
-  - role: metallb
   - role: reflector
     tags: 
     - 'linode'
   - role: traefik
     tags: 
     - 'linode'
-  - role: cert-manager
+  - role: storage
+    tags: 
+    - 'storage'
+    - 'linode'
+  - role: monitoring
     tags: 
     - 'linode'

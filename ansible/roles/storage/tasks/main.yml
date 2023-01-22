@@ -3,6 +3,11 @@
 - name: Remove default storage classes
   shell: kubectl get sc -o yaml > ~/sc.yaml && kubectl delete -f ~/sc.yaml
 
+- name: Copy values file
+  copy:
+    src: "{{ playbook_dir }}/../kubernetes/longhorn"
+    dest: "/home/{{ ansible_user }}/k8s/"
+
 - name: Add the Longhorn helm repo
   kubernetes.core.helm_repository:
     name: longhorn
@@ -15,6 +20,12 @@
     release_namespace: longhorn-system
     create_namespace: yes
     values_files:
-      - "{{ playbook_dir }}/../kubernetes/longhorn/values.yaml"
-    wait: yes
+      - "/home/{{ ansible_user }}/k8s/longhorn/values.yaml"
+    wait: no
     atomic: yes
+  ignore_errors: true
+
+- name: Apply Longhorn ingress
+  k8s:
+    apply: true
+    src: "/home/{{ ansible_user }}/k8s/longhorn/ingress.yaml"

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rancher-lb
+  namespace: cattle-system
+  labels:
+    app: rancher
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https-internal
+      protocol: TCP
+      port: 443
+      targetPort: 444
+  selector:
+    app: rancher
+  loadBalancerIP: 10.1.2.185
+  type: LoadBalancer
+  sessionAffinity: ClientIP
