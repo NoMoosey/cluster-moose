@@ -1,0 +1,29 @@
+---
+- name: Create Argo CD namespace
+  k8s:
+    kind: namespace
+    name: argocd
+    state: present
+
+- name: Create Argo CD in k8s directory
+  file:
+    state: directory
+    path: ~/k8s/argocd
+
+- name: Download Argo CD install manifest to the cluster.
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    dest: ~/k8s/argocd/install.yaml
+    mode: '0664'
+
+- name: Install Argo CD manifests
+  k8s:
+    src: ~/k8s/argocd/install.yaml
+    state: present
+    namespace: argocd
+
+- name: Apply Argo's ingress
+  k8s:
+    definition: "{{ lookup('file', '../kubernetes/argocd/ingress.yaml') | from_yaml }}"
+    state: present
+    namespace: argocd

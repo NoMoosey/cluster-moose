@@ -25,3 +25,7 @@
 - name: Install python K8s Module
   pip:
     name: kubernetes
+
+- name: Install NFS reqs
+  apt:
+    name: nfs-common

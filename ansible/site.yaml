@@ -22,3 +22,6 @@
   - role: monitoring
     tags: 
     - 'linode'
+  - role: argocd
+    tags:
+    - 'argo'

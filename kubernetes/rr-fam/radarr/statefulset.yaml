@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: radarr
-        image: ghcr.io/linuxserver/radarr:4.1.0.6175-ls151
+        image: ghcr.io/linuxserver/radarr:latest
         env:
         - name: PUID
           value: "0"
@@ -26,6 +26,8 @@ spec:
         - containerPort: 7878
           name: web
         volumeMounts:
+        - name: backups
+          mountPath: /config/Backups
         - name: config
           mountPath: /config
           readOnly: false
@@ -52,22 +54,26 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "2000m"
-      initContainers:
-      - name: radarr-init
-        image: nomoosey/radarr-init:latest
-        volumeMounts:
-        - name: config
-          mountPath: /config_mount
-        command: ['bash', '-c', "sleep 10; cp -rn /init_config/radarr/* /config_mount/;"]
+      # initContainers:
+      # - name: radarr-init
+      #   image: nomoosey/radarr-init:latest
+      #   volumeMounts:
+      #   - name: config
+      #     mountPath: /config_mount
+      #   command: ['bash', '-c', "sleep 10; cp -rn /init_config/radarr/* /config_mount/;"]
       volumes:
+      - name: backups
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/lab/backups/radarr
       - name: downloads
         nfs:
           server: 10.1.0.200
-          path: /volume1/dev/downloads
+          path: /volume1/lab/media
       - name: media
         nfs:
           server: 10.1.0.200
-          path: /volume1/dev/media/tv
+          path: /volume1/media/movies
       - name: config
         persistentVolumeClaim:
           claimName: radarr-pvc

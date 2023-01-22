@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: heimdall
+  namespace: argocd
+  # annotations:
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/NoMoosey/cluster-moose
+    targetRevision: HEAD
+    path: kubernetes/heimdall
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: heimdall
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sonarr
-        image: ghcr.io/linuxserver/sonarr:3.0.9.1549-ls154
+        image: ghcr.io/linuxserver/sonarr:latest
         env:
         - name: PUID
           value: "0"
@@ -26,6 +26,8 @@ spec:
         - containerPort: 8989
           name: web
         volumeMounts:
+        - name: backups
+          mountPath: /config/Backups
         - name: config
           mountPath: /config
           readOnly: false
@@ -52,22 +54,26 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "2000m"
-      initContainers:
-      - name: sonarr-init
-        image: nomoosey/sonarr-init:latest
-        volumeMounts:
-        - name: config
-          mountPath: /config_mount
-        command: ['bash', '-c', "sleep 10; cp -rn /init_config/sonarr/* /config_mount/;"]
+      # initContainers:
+      # - name: sonarr-init
+      #   image: nomoosey/sonarr-init:latest
+      #   volumeMounts:
+      #   - name: config
+      #     mountPath: /config_mount
+      #   command: ['bash', '-c', "sleep 10; cp -rn /init_config/sonarr/* /config_mount/;"]
       volumes:
+      - name: backups
+        nfs:
+          server: 10.1.0.200
+          path: /volume1/lab/backups/sonarr
       - name: downloads
         nfs:
           server: 10.1.0.200
-          path: /volume1/dev/downloads
+          path: /volume1/lab/media
       - name: media
         nfs:
           server: 10.1.0.200
-          path: /volume1/dev/media/tv
+          path: /volume1/media/tv
       - name: config
         persistentVolumeClaim:
           claimName: sonarr-pvc
