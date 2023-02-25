@@ -19,5 +19,5 @@ spec:
     namespace: heimdall
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true

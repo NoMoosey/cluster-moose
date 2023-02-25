@@ -19,5 +19,5 @@ spec:
     namespace: rr-fam
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
